@@ -35,15 +35,17 @@ export const PeoplePage = () => {
       });
   }, []);
 
+  const normalizeName = (name: string) => name.trim().toLowerCase();
+
   const peopleByName = useMemo(() => {
-    return new Map(people.map(p => [p.name, p]));
+    return new Map(people.map(p => [normalizeName(p.name), p]));
   }, [people]);
 
   const filteredPeople = useMemo(() => {
     return people.filter(p => {
       const name = p.name.toLowerCase();
-      const motherName = (p.motherName || '-').toLowerCase();
-      const fatherName = (p.fatherName || '-').toLowerCase();
+      const motherName = (p.motherName || '').toLowerCase();
+      const fatherName = (p.fatherName || '').toLowerCase();
 
       const matchesQuery =
         !query ||

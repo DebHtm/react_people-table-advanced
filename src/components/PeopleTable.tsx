@@ -45,12 +45,14 @@ export const PeopleTable: React.FC<Props> = ({
 
       <tbody>
         {people.map(human => {
+          const normalizeName = (name: string) => name.trim().toLowerCase();
+
           const motherPerson = human.motherName
-            ? (peopleByName.get(human.motherName) ?? null)
+            ? (peopleByName.get(normalizeName(human.motherName)) ?? null)
             : null;
 
           const fatherPerson = human.fatherName
-            ? (peopleByName.get(human.fatherName) ?? null)
+            ? (peopleByName.get(normalizeName(human.fatherName)) ?? null)
             : null;
 
           return (
