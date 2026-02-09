@@ -41,7 +41,15 @@ export const PeoplePage = () => {
 
   const filteredPeople = useMemo(() => {
     return people.filter(p => {
-      const matchesQuery = !query || p.name.toLowerCase().includes(query);
+      const name = p.name.toLowerCase();
+      const motherName = (p.motherName || '-').toLowerCase();
+      const fatherName = (p.fatherName || '-').toLowerCase();
+
+      const matchesQuery =
+        !query ||
+        name.includes(query) ||
+        motherName.includes(query) ||
+        fatherName.includes(query);
 
       const matchesSex = !sex || p.sex === sex;
 

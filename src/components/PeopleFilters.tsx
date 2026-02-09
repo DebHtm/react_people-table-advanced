@@ -9,9 +9,17 @@ export const PeopleFilters = () => {
   const sex = searchParams.get('sex') || '';
 
   function handleQueryChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const value = event.target.value;
+    const trimmed = value.trim();
+
     const params = new URLSearchParams(searchParams);
 
-    params.set('query', event.target.value);
+    if (!trimmed) {
+      params.delete('query');
+    } else {
+      params.set('query', trimmed);
+    }
+
     setSearchParams(params);
   }
 
@@ -27,16 +35,6 @@ export const PeopleFilters = () => {
     setSearchParams(params);
   }
 
-  function handleCenturyChange(cen: string) {
-    const params = new URLSearchParams(searchParams);
-    const newCen = century.includes(cen)
-      ? century.filter(centry => centry !== cen)
-      : [...century, cen];
-
-    params.delete('centuries');
-    newCen.forEach(cent => params.append('centuries', cent));
-    setSearchParams(params);
-  }
 
   function clearCentury() {
     const params = new URLSearchParams(searchParams);
@@ -104,22 +102,33 @@ export const PeopleFilters = () => {
       <div className="panel-block">
         <div className="level is-flex-grow-1 is-mobile" data-cy="CenturyFilter">
           <div className="level-left">
-            {[16, 17, 18, 19, 20].map(value => (
-              <Link
-                key={value}
-                data-cy="century"
-                to={`/people?centuries=${value}`}
-                className={classNames('button mr-1', {
-                  'is-info': century.includes(String(value)),
-                })}
-                onClick={e => {
-                  e.preventDefault();
-                  handleCenturyChange(String(value));
-                }}
-              >
-                {value}
-              </Link>
-            ))}
+            {[16, 17, 18, 19, 20].map(value => {
+              const valueStr = String(value);
+              const params = new URLSearchParams(searchParams);
+
+              const nextCenturies = century.includes(valueStr)
+                ? century.filter(c => c !== valueStr)
+                : [...century, valueStr];
+
+              params.delete('centuries');
+              nextCenturies.forEach(c => params.append('centuries', c));
+
+              return (
+                <Link
+                  key={value}
+                  data-cy="century"
+                  to={{
+                    pathname: '/people',
+                    search: params.toString(),
+                  }}
+                  className={classNames('button mr-1', {
+                    'is-info': century.includes(valueStr),
+                  })}
+                >
+                  {value}
+                </Link>
+              );
+            })}
           </div>
 
           <div className="level-right ml-4">

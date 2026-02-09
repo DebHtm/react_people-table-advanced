@@ -17,15 +17,21 @@ export const SortLink: React.FC<Props> = ({ field, label }) => {
   const isDesc = isActive && order === 'desc';
 
   const getNextSearch = () => {
+    const params = new URLSearchParams(searchParams);
+
     if (!isActive) {
-      return `?sort=${field}`;
+      params.set('sort', field);
+      params.delete('order');
+    } else if (!isDesc) {
+      params.set('order', 'desc');
+    } else {
+      params.delete('sort');
+      params.delete('order');
     }
 
-    if (!isDesc) {
-      return `?sort=${field}&order=desc`;
-    }
+    const next = params.toString();
 
-    return '';
+    return next ? `?${next}` : '';
   };
 
   const iconClass = () => {
